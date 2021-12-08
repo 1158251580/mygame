@@ -1,5 +1,5 @@
 import pygame
-from terrain import Grass
+from terrain import grass,removable
 
 
 class Map:
@@ -18,13 +18,13 @@ class Map:
         self.empty_map[raw][col] = status
 
     def change_map(self,begin,end, status):
-        self.empty_map[begin[0]][begin[1]] = 0
+        self.empty_map[begin[0]][begin[1]] = removable
         self.empty_map[end[0]][end[1]] = status
 
     def create(self,screen):
         for i in range(self.real_height):
             for j in range(self.real_width):
-                screen.blit(Grass(i,j).role, (j*self.block, i*self.block))
+                screen.blit(grass.role, (j*self.block, i*self.block))
                 if self.empty_map[i][j]:
                     screen.blit(self.empty_map[i][j].role, (j*self.block, i*self.block))
                 pygame.draw.line(screen, (0,0,0), (j*self.block,0), (j*self.block,self.map_height), 1)

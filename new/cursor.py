@@ -4,10 +4,10 @@ from algorithm import flood
 from terrain import Attack, Removable
 
 class Cursor:
-    def __init__(self,raw,col,map_obj):
+    def __init__(self,map_obj):
         self.map_obj = map_obj
-        self.cursor_raw = raw
-        self.cursor_col = col
+        self.cursor_raw = 0
+        self.cursor_col = 0
         self.cursor = [
             pygame.image.load('../images/未选中光标.png'),
             pygame.image.load('../images/选中光标.png'),
@@ -44,10 +44,9 @@ class Cursor:
         self.cursor_raw = raw
         self.cursor_col = col
 
-    def catch(self):
+    def catch(self,current_chess):
         # 选中的是士兵
-        if isinstance(self.get_cursor_index_obj,Dogface) or \
-            isinstance(self.get_cursor_index_obj,Devil) :
+        if self.get_cursor_index_obj in current_chess:
             print("选中")
             # 光标切换
             self.status = 1

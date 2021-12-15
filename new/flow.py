@@ -45,7 +45,11 @@ class God:
             # 敌人回合结束或者开局
             self.current_action = "player"
             self.current_chess = self.player_chess[:]
-        
+        if self.current_chess:
+            current_chess = self.current_chess[-1]
+            raw, col = current_chess.get_cur_index()
+            self.c.set_cur_index(raw,col)
+            self.screen.blit(self.c.cursor[self.c.status],(self.c.cursor_col*self.m.block,self.c.cursor_raw*self.m.block))
     
     def start(self):
         myfont = pygame.font.Font(None, 70)

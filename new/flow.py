@@ -72,9 +72,9 @@ class God:
         self.m.load_map(boss)
         self.load([d1,d2],[],[boss])
         self.c.set_cur_index(0,0)
-        # c = Cursor(0,0,m)
+        clock.tick(10)                      # 每秒执行10次
         while True:
-            clock.tick(10)                      # 每秒执行10次
+            
             # screen.fill((255,255,255))
             if self.current_chess:
                 if self.current_action == "player":
@@ -84,22 +84,15 @@ class God:
                         # 光标可以自由移动
                         if (event.type == pygame.KEYDOWN and event.key == pygame.K_UP):
                             self.c.move_up()
-                            # screen.blit(c.cursor[c.status],(c.cursor_col*m.block,c.cursor_raw*m.block))
                         elif (event.type == pygame.KEYDOWN and event.key == pygame.K_DOWN):
                             self.c.move_down()
-                            # screen.blit(c.cursor[c.status],(c.cursor_col*m.block,c.cursor_raw*m.block))
                         elif (event.type == pygame.KEYDOWN and event.key == pygame.K_LEFT):
                             self.c.move_left()
-                            # screen.blit(c.cursor[c.status],(c.cursor_col*m.block,c.cursor_raw*m.block))
                         elif (event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT):
                             self.c.move_right()
-                            # screen.blit(c.cursor[c.status],(c.cursor_col*m.block,c.cursor_raw*m.block))
                         elif (event.type == pygame.KEYDOWN and event.key == pygame.K_a) and not self.c.status:
                             # 首次选中
                             self.c.catch(self.current_chess)
-                            # screen.blit(c.cursor[c.status],(c.cursor_col*m.block,c.cursor_raw*m.block))
-                            
-                            # print("我方行动：",self.current_chess.pop())
                         elif (event.type == pygame.KEYDOWN and event.key == pygame.K_a) and self.c.status:
                             # 再次选中
                             if self.c.get_cursor_index_obj==removable:
@@ -110,7 +103,6 @@ class God:
                                 # 重置棋子位置
                                 self.c.current_obj.set_cur_index(end[0],end[1])
                                 # 可移动棋子数-1
-                                # self.current_chess -= 1
                                 self.current_chess.pop(self.current_chess.index(self.c.current_obj))
                                 self.c.current_obj.status = 0
                                 print("起始坐标{}，移动坐标{},开始移动".format(begin,end))

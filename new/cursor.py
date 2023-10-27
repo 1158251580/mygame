@@ -9,8 +9,8 @@ class Cursor:
         self.cursor_raw = 0
         self.cursor_col = 0
         self.cursor = [
-            pygame.image.load('../images/未选中光标.png'),
-            pygame.image.load('../images/选中光标.png'),
+            pygame.image.load('images/未选中光标.png'),
+            pygame.image.load('images/选中光标.png'),
             ]
         self.status = 0
         self.current_obj = None
@@ -47,7 +47,7 @@ class Cursor:
     def catch(self,current_chess):
         # 选中的是士兵
         if self.get_cursor_index_obj in current_chess:
-            print("选中")
+            print("选中",self.get_cursor_index_obj.name)
             # 光标切换
             self.status = 1
             # 保存捕获对象

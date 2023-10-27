@@ -8,7 +8,7 @@ from map import Map
 from terrain import grass,store,removable,attack
 from chess import Dogface,Devil
 from cursor import Cursor
-from algorithm import a_start,priority
+from algorithm import a_start,a_start_recursion,priority
 
 pygame.init()
 
@@ -38,7 +38,7 @@ class God:
             self.current_action = "neutral"
             self.current_chess = self.neutral_chess[:]
         elif self.current_action == "neutral":
-            # 我方回合结束
+            # 友方回合结束
             self.current_action = "enemy"
             self.current_chess = self.enemy_chess[:]
         else:
@@ -54,33 +54,56 @@ class God:
     def start(self):
         myfont = pygame.font.Font(None, 70)
         clock = pygame.time.Clock()             # 设置时钟
-        d1 = Dogface('士兵一号')
-        d1.set_cur_index(1,3)
-        d2 = Dogface('士兵二号')
-        d2.set_cur_index(5,6)
-        boss = Devil('大魔王')
-        boss.set_cur_index(16,12)
-        print(d1.role,pygame.image.load('../images/man/士兵.png'))
+
+        # 加载场景
         store.set_cur_index(14,11)
         self.m.load_map(store)
         store.set_cur_index(7,18)
         self.m.load_map(store)
         store.set_cur_index(13,5)
         self.m.load_map(store)
+
+        # 加载人物
+        d1 = Dogface('士兵一号','images/man/士兵.png')
+        d1.set_cur_index(16,3)
+        d2 = Dogface('士兵二号','images/man/士兵.png')
+        d2.set_cur_index(15,16)
+        boss = Devil('大魔王','images/man/boss.png')
+        boss.set_cur_index(16,12)
+        
         self.m.load_map(d1)
         self.m.load_map(d2)
         self.m.load_map(boss)
+
+        # 加载阵营队列
         self.load([d1,d2],[],[boss])
+
+        # 加载光标
         self.c.set_cur_index(0,0)
         clock.tick(10)                      # 每秒执行10次
         while True:
-            
             # screen.fill((255,255,255))
             if self.current_chess:
                 if self.current_action == "player":
+                    # 棋子移动过程不再监听
+                    if self.c.status and self.c.current_obj.path:
+                        # 棋子移动
+                        time.sleep(1)
+                        begin = self.c.current_obj.get_cur_index()
+                        end = self.c.current_obj.path.popleft()
+                        self.m.change_map(begin,end,self.c.current_obj)
+                        self.c.current_obj.set_cur_index(end[0],end[1])  
+                        if not self.c.current_obj.path:
+                            # 可移动棋子数-1
+                            self.current_chess.pop(self.current_chess.index(self.c.current_obj))
+                            # 移动结束，清除计数器
+                            a_start_recursion.__del__()
+                            # 取消选中
+                            self.c.cancel() 
+                    # 进入事件监听循环
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:   # 如果检测到事件是关闭窗口
-                            sys.exit()     
+                            sys.exit() 
                         # 光标可以自由移动
                         if (event.type == pygame.KEYDOWN and event.key == pygame.K_UP):
                             self.c.move_up()
@@ -90,23 +113,24 @@ class God:
                             self.c.move_left()
                         elif (event.type == pygame.KEYDOWN and event.key == pygame.K_RIGHT):
                             self.c.move_right()
-                        elif (event.type == pygame.KEYDOWN and event.key == pygame.K_a) and not self.c.status:
-                            # 首次选中
-                            self.c.catch(self.current_chess)
-                        elif (event.type == pygame.KEYDOWN and event.key == pygame.K_a) and self.c.status:
-                            # 再次选中
-                            if self.c.get_cursor_index_obj==removable:
-                                begin = self.c.current_obj.get_cur_index()
-                                end = self.c.get_cur_index()
-                                # 移动
-                                self.m.change_map(begin,end,self.c.current_obj)
-                                # 重置棋子位置
-                                self.c.current_obj.set_cur_index(end[0],end[1])
-                                # 可移动棋子数-1
-                                self.current_chess.pop(self.current_chess.index(self.c.current_obj))
-                                self.c.current_obj.status = 0
-                                print("起始坐标{}，移动坐标{},开始移动".format(begin,end))
-                            self.c.cancel()
+                        elif (event.type == pygame.KEYDOWN and event.key == pygame.K_a):
+                            if not self.c.status:
+                                # 首次选中
+                                self.c.catch(self.current_chess)
+                            elif self.c.status:
+                                # 再次选中
+                                if self.c.get_cursor_index_obj==boss or self.c.get_cursor_index_obj==removable:
+                                    # 计算距离
+                                    a_start_recursion(self.m,self.c.current_obj.get_cur_index(),self.c.get_cur_index(),self.c.current_obj.step)
+                                    # 判断位置是否可达
+                                    if a_start_recursion.count == 1 and self.c.current_obj.get_cur_index() != self.c.get_cur_index():
+                                        # 位置不可达，清楚计数器，取消选中
+                                        a_start_recursion.__del__()
+                                        self.c.cancel()
+                                    else:
+                                        self.c.current_obj.path = a_start_recursion.path
+                                else:
+                                    self.c.cancel()
                             # screen.blit(c.cursor[c.status],(c.cursor_col*m.block,c.cursor_raw*m.block))
                 elif self.current_action == "neutral" or self.current_action == "enemy":
                     if not self.c.status:

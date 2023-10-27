@@ -31,7 +31,7 @@ class Chess(Block):
 class Dogface(Block):
 
     def set_role(self):
-        self.role = pygame.image.load('../images/man/士兵.png')
+        self.role = pygame.image.load('images/man/士兵.png')
         self.step = 4
 
     
@@ -40,6 +40,6 @@ class Dogface(Block):
 class Devil(Block):
         
     def set_role(self):
-        self.role = pygame.image.load('../images/man/boss.png')
+        self.role = pygame.image.load('images/man/boss.png')
         self.step = 4
         self.path = deque([])

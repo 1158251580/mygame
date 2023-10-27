@@ -8,8 +8,8 @@ class Cursor:
         self.cursor_raw = 0
         self.cursor_col = 0
         self.cursor = [
-            pygame.image.load('../images/man/士兵.png'),
-            pygame.image.load('../images/选中光标.png'),
+            pygame.image.load('images/man/士兵.png'),
+            pygame.image.load('images/选中光标.png'),
             ]
         self.status = 0
         self.current_obj = None

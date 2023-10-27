@@ -1,11 +1,10 @@
 import pygame
 
 class Block:
-    def __init__(self,name):
-        self.cur_raw = 0
-        self.cur_col = 0
+    def __init__(self,name,image='images/man/black.png'):
+        # 初始化
         self.name = name
-        self.step = 0
+        self.role = pygame.image.load(image)
         self.set_role()
 
     def get_cur_index(self):

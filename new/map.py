@@ -11,17 +11,17 @@ class Map:
         
     @property
     def map_size(self):
-        return (self.map_width,self.map_height)
+        return (self.map_width, self.map_height)
 
-    def load_map(self,status):
+    def load_map(self, status):
         raw, col = status.get_cur_index()
         self.empty_map[raw][col] = status
 
-    def change_map(self,begin,end, status):
+    def change_map(self, begin, end, status):
         self.empty_map[begin[0]][begin[1]] = removable
         self.empty_map[end[0]][end[1]] = status
 
-    def create(self,screen):
+    def create(self, screen):
         for i in range(self.real_height):
             for j in range(self.real_width):
                 screen.blit(grass.role, (j*self.block, i*self.block))

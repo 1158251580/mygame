@@ -1,7 +1,8 @@
 from collections import deque
 from copy import deepcopy
 from terrain import removable,attack
-from chess import Dogface
+from chess import Dogface,Devil
+from tools import Counter
 
 # 可移动范围
 def movable(m,raw,col,step):
@@ -109,3 +110,41 @@ def a_start(m,cur_obj,target_obj):
         else:
             break
     return over
+
+@Counter
+def a_start_recursion(m,cur_obj_index,target_obj_index,step,attack_range=1):
+    # A星算法-递归
+    # 目标不可达
+    if city_block_distance(cur_obj_index, target_obj_index) > step+attack_range and step:
+        pass
+    # 抵达目标
+    elif city_block_distance(cur_obj_index, target_obj_index) == bool(isinstance(m.empty_map[target_obj_index[0]][target_obj_index[1]],Devil)):
+        pass
+    # 目标可达
+    else:
+        raw = cur_obj_index[0]
+        col = cur_obj_index[1]
+
+        over = deque([])
+        distance = []
+        coord = []   
+        if raw-1>=0 and (raw-1,col) not in over:
+            if m.empty_map[raw-1][col]==removable:
+                coord.append((raw-1,col))
+                distance.append(city_block_distance((raw-1,col),target_obj_index)+1)
+        if raw+1<m.real_height and (raw+1,col) not in over: 
+            if m.empty_map[raw+1][col]==removable:
+                coord.append((raw+1,col))
+                distance.append(city_block_distance((raw+1,col),target_obj_index)+1)
+        if col-1>=0 and (raw,col-1) not in over :
+            if m.empty_map[raw][col-1]==removable:
+                coord.append((raw,col-1))
+                distance.append(city_block_distance((raw,col-1),target_obj_index)+1)
+        if col+1<m.real_width and (raw,col+1) not in over :
+            if m.empty_map[raw][col+1]==removable:
+                coord.append((raw,col+1))
+                distance.append(city_block_distance((raw,col+1),target_obj_index)+1)
+        if distance and coord:
+            # 找出最短距离下一步
+            next_d = coord[distance.index(min(distance))]
+            a_start_recursion(m,next_d,target_obj_index,step-1,attack_range)

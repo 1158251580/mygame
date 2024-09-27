@@ -10,8 +10,6 @@ from chess import Dogface,Devil
 from cursor import Cursor
 from algorithm import a_start,a_start_recursion,priority
 
-pygame.init()
-
 class God:
     def __init__(self,screen):
         self.screen = screen
@@ -52,9 +50,6 @@ class God:
             self.screen.blit(self.c.cursor[self.c.status],(self.c.cursor_col*self.m.block,self.c.cursor_raw*self.m.block))
     
     def start(self):
-        myfont = pygame.font.Font(None, 70)
-        clock = pygame.time.Clock()             # 设置时钟
-
         # 加载场景
         store.set_cur_index(14,11)
         self.m.load_map(store)
@@ -80,7 +75,6 @@ class God:
 
         # 加载光标
         self.c.set_cur_index(0,0)
-        clock.tick(10)                      # 每秒执行10次
         while True:
             # screen.fill((255,255,255))
             if self.current_chess:
@@ -156,8 +150,8 @@ class God:
                         # self.current_chess -= 1
                         self.c.cancel()
                         # screen.blit(c.cursor[c.status],(c.cursor_col*m.block,c.cursor_raw*m.block))
-                self.m.create(screen)
-                screen.blit(self.c.cursor[self.c.status],(self.c.cursor_col*self.m.block,self.c.cursor_raw*self.m.block))
+                self.m.create(self.screen)
+                self.screen.blit(self.c.cursor[self.c.status],(self.c.cursor_col*self.m.block,self.c.cursor_raw*self.m.block))
                 pygame.display.update() 
             else:
                 print("回合结束")
@@ -168,7 +162,3 @@ class God:
                  
                 
 
-screen = pygame.display.set_mode((960,640))  # 显示窗口
-screen.fill((0,255,255))
-G = God(screen)
-G.start()
